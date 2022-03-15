@@ -10,5 +10,8 @@ migratedown:
 	migrate -path db/migration -database "postgres://admin:admin@localhost:5432/weather?sslmode=disable" -verbose down
 sqlc:
 	sqlc generate
-
-PHONY: postgres createdb dropdb migrateup migratedown sqlc
+test:
+	go test -v ./...
+server:
+	go run main.go
+PHONY: postgres createdb dropdb migrateup migratedown sqlc test server

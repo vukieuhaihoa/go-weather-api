@@ -35,6 +35,16 @@ func (q *Queries) CreateLocation(ctx context.Context, arg CreateLocationParams) 
 	return i, err
 }
 
+const deleteLocation = `-- name: DeleteLocation :exec
+DELETE FROM location
+WHERE id = $1
+`
+
+func (q *Queries) DeleteLocation(ctx context.Context, id int64) error {
+	_, err := q.db.ExecContext(ctx, deleteLocation, id)
+	return err
+}
+
 const getListLocation = `-- name: GetListLocation :many
 SELECT id, name, longitude, latitude, count FROM location
 ORDER BY id
@@ -94,12 +104,21 @@ func (q *Queries) GetLocation(ctx context.Context, id int64) (Location, error) {
 	return i, err
 }
 
-const updateLocation = `-- name: UpdateLocation :exec
+const updateLocation = `-- name: UpdateLocation :one
 UPDATE location SET count = count + 1
 WHERE id = $1
+RETURNING id, name, longitude, latitude, count
 `
 
-func (q *Queries) UpdateLocation(ctx context.Context, id int64) error {
-	_, err := q.db.ExecContext(ctx, updateLocation, id)
-	return err
+func (q *Queries) UpdateLocation(ctx context.Context, id int64) (Location, error) {
+	row := q.db.QueryRowContext(ctx, updateLocation, id)
+	var i Location
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Longitude,
+		&i.Latitude,
+		&i.Count,
+	)
+	return i, err
 }

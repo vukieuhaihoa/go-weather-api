@@ -2,9 +2,7 @@
 
 package db
 
-import (
-	"database/sql"
-)
+import ()
 
 type Location struct {
 	ID int64 `json:"id"`
@@ -13,5 +11,5 @@ type Location struct {
 	Longitude float64 `json:"longitude"`
 	Latitude  float64 `json:"latitude"`
 	// to count visited
-	Count sql.NullInt32 `json:"count"`
+	Count int32 `json:"count"`
 }

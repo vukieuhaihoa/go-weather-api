@@ -17,8 +17,11 @@ ORDER BY id
 LIMIT $1
 OFFSET $2;
 
--- name: UpdateLocation :exec
+-- name: UpdateLocation :one
 UPDATE location SET count = count + 1
+WHERE id = $1
+RETURNING *;
+
+-- name: DeleteLocation :exec
+DELETE FROM location
 WHERE id = $1;
-
-

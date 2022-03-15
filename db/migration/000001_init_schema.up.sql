@@ -3,7 +3,7 @@ CREATE TABLE "location" (
   "name" varchar NOT NULL,
   "longitude" float8 NOT NULL,
   "latitude" float8 NOT NULL,
-  "count" integer DEFAULT 0
+  "count" integer NOT NULL DEFAULT 0
 );
 
 CREATE INDEX ON "location" ("name");
