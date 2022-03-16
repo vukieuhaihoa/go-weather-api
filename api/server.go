@@ -41,6 +41,8 @@ func NewServer(store *db.Store) *Server {
 
 	// router for location
 	router.POST("/location", server.createLocation)
+	router.GET("/location/:id", server.getLocation)
+	router.PUT("location/:id", server.updateLocation)
 
 	server.router = router
 	return server

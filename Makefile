@@ -1,5 +1,7 @@
 postgres:
 	docker run --name postgres14 -p 5432:5432 -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=admin -d postgres:14.1-alpine
+restartdb:
+	docker restart postgres14
 createdb:
 	docker exec -it postgres14 createdb --username=admin --owner=admin weather
 dropdb:
@@ -14,4 +16,4 @@ test:
 	go test -v ./...
 server:
 	go run main.go
-PHONY: postgres createdb dropdb migrateup migratedown sqlc test server
+PHONY: postgres restartdb createdb dropdb migrateup migratedown sqlc test server

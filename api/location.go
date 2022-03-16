@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"database/sql"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -31,6 +32,54 @@ func (s *Server) createLocation(ctx *gin.Context) {
 	location, err := s.store.CreateLocation(context.Background(), arg)
 
 	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, location)
+}
+
+type getLocationRequest struct {
+	ID int64 `uri:"id" binding:"required,min=1"`
+}
+
+func (s *Server) getLocation(ctx *gin.Context) {
+	var req getLocationRequest
+
+	if err := ctx.ShouldBindUri(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	location, err := s.store.GetLocation(context.Background(), req.ID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			ctx.JSON(http.StatusNotFound, errorResponse(err))
+			return
+		}
+
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, location)
+}
+
+func (s *Server) updateLocation(ctx *gin.Context) {
+	var req getLocationRequest
+
+	if err := ctx.ShouldBindUri(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	location, err := s.store.UpdateLocation(context.Background(), req.ID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			ctx.JSON(http.StatusNotFound, errorResponse(err))
+			return
+		}
+
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
