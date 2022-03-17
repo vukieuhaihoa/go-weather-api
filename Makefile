@@ -2,6 +2,10 @@ postgres:
 	docker run --name postgres14 -p 5432:5432 -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=admin -d postgres:14.1-alpine
 restartdb:
 	docker restart postgres14
+redis:
+	dock run --name redis -p 6379:6379 -d redis
+restartredis:
+	docker restart redis
 createdb:
 	docker exec -it postgres14 createdb --username=admin --owner=admin weather
 dropdb:

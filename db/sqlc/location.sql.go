@@ -104,6 +104,24 @@ func (q *Queries) GetLocation(ctx context.Context, id int64) (Location, error) {
 	return i, err
 }
 
+const getLocationByName = `-- name: GetLocationByName :one
+SELECT id, name, longitude, latitude, count FROM location
+WHERE name = $1 LIMIT 1
+`
+
+func (q *Queries) GetLocationByName(ctx context.Context, name string) (Location, error) {
+	row := q.db.QueryRowContext(ctx, getLocationByName, name)
+	var i Location
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Longitude,
+		&i.Latitude,
+		&i.Count,
+	)
+	return i, err
+}
+
 const updateLocation = `-- name: UpdateLocation :one
 UPDATE location SET count = count + 1
 WHERE id = $1

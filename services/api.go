@@ -3,6 +3,7 @@ package services
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 )
 
 type OpenWeatherMapData struct {
@@ -16,6 +17,10 @@ type OpenWeatherMapData struct {
 	Sys struct {
 		Country string `json:"country"`
 	} `json:"sys"`
+	Coord struct {
+		Lon float64 `json:"lon"`
+		Lat float64 `json:"lat"`
+	} `json:"coord"`
 }
 
 func GetWeatherByCityID(city string) (OpenWeatherMapData, error) {
@@ -31,6 +36,7 @@ func GetWeatherByCityID(city string) (OpenWeatherMapData, error) {
 
 	defer res.Body.Close()
 
+	time.Sleep(5 * time.Second)
 	err = json.NewDecoder(res.Body).Decode(&data)
 	if err != nil {
 		return data, err

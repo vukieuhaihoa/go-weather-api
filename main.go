@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"log"
 
+	"github.com/go-redis/redis/v8"
 	_ "github.com/lib/pq"
 	"github.com/vukieuhaihoa/go-weather-api/api"
 	db "github.com/vukieuhaihoa/go-weather-api/db/sqlc"
@@ -22,7 +23,13 @@ func main() {
 		log.Fatal("can not connect to db:", err)
 	}
 
-	store := db.NewStore(conn)
+	redisClient := redis.NewClient(&redis.Options{
+		Addr:     "0.0.0.0:6379",
+		Password: "",
+		DB:       0,
+	})
+
+	store := db.NewStore(conn, redisClient)
 	server := api.NewServer(store)
 
 	err = server.Start(serverAddress)

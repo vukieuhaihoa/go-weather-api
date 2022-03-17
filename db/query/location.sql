@@ -10,6 +10,10 @@ RETURNING *;
 SELECT * FROM location
 WHERE id = $1 LIMIT 1;
 
+-- name: GetLocationByName :one
+SELECT * FROM location
+WHERE name = $1 LIMIT 1;
+
 
 -- name: GetListLocation :many
 SELECT * FROM location
